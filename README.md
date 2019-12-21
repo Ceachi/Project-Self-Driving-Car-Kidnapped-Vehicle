@@ -141,10 +141,10 @@ We generally think of our vehicle location as a probability distribution, each t
 ### Bayes Rule
 - Bayes Rule is the fundamentals of markov localisation.
 - Enables us to determine the conditional probability of a state given evidence P(a|b) by relating it to the conditional probability of the evidence given the state (P(b|a) 
-
-
+![Bayes Rule](images/1.png)
 
 
 ## Particle Filters overview
+
 
 
