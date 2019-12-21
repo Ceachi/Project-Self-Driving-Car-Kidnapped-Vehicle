@@ -248,3 +248,55 @@ Particle filters has got four major steps:
 - Update step: During the update step, we update our particle weights using map landmark positions and feature measurements.
 - Resample step: During resampling we will resample M times (M is range of 0 to length_of_particleArray) drawing a particle i (i is the particle index) proportional to its weight. Resampling wheel is used at this step.
 ```
+
+###  Initialisation step
+Very first thing in Particle filter is to initialise all the particles. At this step we have to decide how many particles we want to use. Generally we have to come up with a good number as it wont be too small that will prone to error or too high so that it is computationally expensive. General approach to initialisation step is to use GPS input to estimate our position.
+
+### Prediction step
+Now that we have initialized our particles it’s time to predict the vehicle’s position. Here we will use below formula to predict where the vehicle will be at the next time step, by updating based on yaw rate and velocity, while accounting for Gaussian sensor noise.
+![k7](images/k7.png)
+
+### Update step
+Now that we have incorporated velocity and yaw rate measurement inputs into our filter, we must update particle weights based on LIDAR and RADAR readings of landmarks.  
+
+```cpp
+Update step has got three major steps:
+1. Transformation
+2. Association
+3. Update Weights
+```
+
+#### 1. Transformation
+We will first need to transform the car’s measurements from its local car coordinate system to the map’s coordinate system.
+![k8](images/k8.png)
+
+Observations in the car coordinate system can be transformed into map coordinates (xm​ and ym​) by passing car observation coordinates (xc​ and yc​), map particle coordinates (xp​ and yp​), and our rotation angle (-90 degrees) through a homogenous transformation matrix. This homogenous transformation matrix, shown below, performs rotation and translation.
+![k9](images/k9.png)
+
+Matrix multiplication results in:
+![k10](images/k10.png)
+
+#### 2. Associations
+Association is the problem of matching landmark measurement to object in the real world such as map landmarks.
+![k11](images/k11.png)
+
+Now that observations have been transformed into the map’s coordinate space, the next step is to associate each transformed observation with a land mark identifier. In the map exercise above we have 5 total landmarks each identified as L1, L2, L3, L4, L5, and each with a known map location. We need to associate each transformed observation TOBS1, TOBS2, TOBS3 with one of these 5 identifiers. To do this we must associate the closest landmark to each transformed observation. Consider below example to explain about the data association problem.
+![k12](images/k12.png)
+
+In this case, we have two Lidar measurements to the rock. We need to find which of these two measurements are corresponding to the rock. If we estimate that, any of the measurement is true, position of the car will be different based on the which measurement we picked.
+![k13](images/k13.png)
+
+As we have multiple measurements to the landmark, we can use Nearest Neighbour technique to find the right one.
+![k14](images/k14.png)
+
+In this method, we take the closest measurement as the right measurement.
+![k15](images/k15.png)
+
+There are few pros and cons for this approach. Easy to understand and implement is the major pros of this algorithm. In terms cons, not robust to sensor noise, not robust to errors in position estimates etc.
+
+#### 3. Update Weights
+Now we that we have done the measurement transformations and associations, we have all the pieces we need to calculate the particle’s final weight. The particles final weight will be calculated as the product of each measurement’s Multivariate-Gaussian probability density. The Multivariate-Gaussian probability density has two dimensions, x and y. The mean of the Multivariate-Gaussian is the measurement’s associated landmark position and the Multivariate-Gaussian’s standard deviation is described by our initial uncertainty in the x and y ranges. The Multivariate-Gaussian is evaluated at the point of the transformed measurement’s position. The formula for the Multivariate-Gaussian can be seen below.
+![k16](images/k16.png)
+
+### Resample step
+Resampling is the technique used to randomly drawing new particles from old ones with replacement in proportion to their importance weights. After resampling, particles with higher weights likely to stay and all others may die out. This is the final step of the Particle filter.
