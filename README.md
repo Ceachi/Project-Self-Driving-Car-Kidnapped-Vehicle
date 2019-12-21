@@ -128,10 +128,23 @@ The things the grading code is looking for are:
 
 2. **Performance**: my particle filter should complete execution within the time of 100 seconds.
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+
+
+# Documentation
+
+## Localization overview
+Self-driving cars use maps because these maps help them figure out what the world is supposed to look like.  
+**Localization** = determining the vehicle’s precise position on the map. This involves determining where on the map the vehicle is most likely to be by matching what the vehicle sees to the map. We might identify specific landmarks — poles and mailboxes and curbs — and measure the vehicle’s distance from each, in order to estimate the vehicle’s position.  
+**Markov Localization or Bayes Filter for Localization** = generalized filter for localization and all other localization approaches are realizations of this approach.  
+We generally think of our vehicle location as a probability distribution, each time we move, our distribution becomes more diffuse (wider). We pass our variables (map data, observation data, and control data) into the filter to concentrate (narrow) this distribution, at each time step. Each state prior to applying the filter represents our prior and the narrowed distribution represents our Bayes’ posterior.  
+
+### Bayes Rule
+- Bayes Rule is the fundamentals of markov localisation.
+- Enables us to determine the conditional probability of a state given evidence P(a|b) by relating it to the conditional probability of the evidence given the state (P(b|a) 
 
 
 
+
+## Particle Filters overview
 
 
