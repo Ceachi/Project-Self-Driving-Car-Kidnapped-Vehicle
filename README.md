@@ -79,31 +79,6 @@ Your job is to build out the methods in `particle_filter.cpp` until the simulato
 Success! Your particle filter passed!
 ```
 
-# Implementing the Particle Filter
-The directory structure of this repository is as follows:
-
-```
-root
-|   build.sh
-|   clean.sh
-|   CMakeLists.txt
-|   README.md
-|   run.sh
-|
-|___data
-|   |   
-|   |   map_data.txt
-|   
-|   
-|___src
-    |   helper_functions.h
-    |   main.cpp
-    |   map.h
-    |   particle_filter.cpp
-    |   particle_filter.h
-```
-
-If you are interested, take a look at `src/main.cpp` as well. This file contains the code that will actually be running your particle filter and calling the associated methods.
 
 ## Inputs to the Particle Filter
 You can find the inputs to the particle filter in the `data` directory.
@@ -141,7 +116,66 @@ We generally think of our vehicle location as a probability distribution, each t
 ### Bayes Rule
 - Bayes Rule is the fundamentals of markov localisation.
 - Enables us to determine the conditional probability of a state given evidence P(a|b) by relating it to the conditional probability of the evidence given the state (P(b|a) 
-![Bayes Rule](images/1.png)
+![Bayes Rule](images/1.PNG)
+
+**Bayes’ Filter for Localization** =  we apply Bayes’ Rule to vehicle localization by passing variables through Bayes’ Rule for each time step, as our vehicle moves.
+
+```cpp
+With respect to localization, these terms are:
+P(location|observation): This is P(a|b), the normalized probability of a position given an observation (posterior).
+P(observation|location): This is P(b|a), the probability of an observation given a position (likelihood)
+P(location): This is P(a), the prior probability of a position
+P(observation): This is P(b), the total probability of an observation
+
+```
+**P(location)** = is determined by motion model  
+
+### Localization Posterior  
+
+ **bel(xt)** = estimate state beliefs  - we estimate this, without observation history.  
+ This **recursive filter** is known as the **Bayes Localization filter or Markov Localization**, and enables us to avoid carrying historical observation and motion data. We will achieve this recursive state estimator using Bayes Rule, the Law of Total Probability, and the Markov Assumption.  
+![Estimate state beliefs](images/2.PNG)
+
+
+```cpp
+z_{1:t} represents the observation vector from time 0 to t (range measurements, bearing, images, etc.).
+u_{1:t} represents the control vector from time 0 to t (yaw/pitch/roll rates and velocities).
+m represents the map (grid maps, feature maps, landmarks)
+xt represents the pose (position (x,y) + orientation \θ)
+```
+We apply Bayes’ rule, with an additional challenge, the presence of multiple distributions on the right side (likelihood, prior, normalizing constant).  
+![Posterior](images/3.PNG)
+
+![Bayes rule applied result of belief state](images/4.PNG)
+
+### Motion Model  
+
+**Motion Model** = It’s a probability distribution of position set xt given the overservation z1:t-1, control u1:t and map m.
+![Bayes rule applied result of belief state](images/5.PNG)
+
+The probability returned by the motion model is the product of the transition model probability (the probability of moving from xt−1 → xt and the probability of the state xt−1.  
+Now we simplify the Motion model is using Markov assumption.  
+**Markov assumption** = A Markov assumption is one in which the conditional probability distribution of future states (ie the next state) is dependent only upon the current state and not on other preceding states. This can be expressed mathematically as:
+P(xt​∣x_1−t,….,xt−i​,….,x0​)=P(xt​∣xt−1​)
+
+Since we (hypothetically) know in which state the system is at time step t-1, the past observations z1:t−1​and controls u1:t−1​ would not provide us additional information to estimate the posterior for xt​, because they were already used to estimate xt−1​. This means, we can simplify p(xt​∣xt−1​,z1:t−1​,u1:t​,m) to p(xt​∣xt−1​,ut​,m).  
+
+Since ut​ is “in the future” with reference xt−1​,ut​ does not tell us much about xt−1​. This means the term p(xt−1​∣z1:t−1​,u1:t​,m) can be simplified to p(xt−1​∣z1:t−1​,u1:t−1​,m). After applying the Markov Assumption, the term p(xt−1​∣z1:t−1​,u1:t−1​,m) describes exactly the belief at xt−1​ ! This means we achieved a recursive structure!  
+
+We can write motion model as below:  
+![Motion model](images/6.PNG)
+
+Wwe have a recursive update formula and can now use the estimated state from the previous time step to predict the current state at t. This is a critical step in a recursive Bayesian filter because it renders us independent from the entire observation and control history. Finally, we replace the integral by a sum over all xi​ because we have a discrete localization scenario in this case.
+![Discrete formula](images/7.PNG)
+
+If you look at bayes rule, in order to calculate prior, we need to apply total probability.  
+
+**The probability returned by the motion model is the product of the transition model probability (the probability of moving from xt−1 → xt and the probability of the state xt−1.**
+
+
+
+
+
 
 
 ## Particle Filters overview
