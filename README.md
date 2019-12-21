@@ -220,5 +220,6 @@ Implement the Bayes’ localization filter by first initializing priors, then do
 
 ## Particle Filters overview
 
-
+Particle filters are the realisation of Bayes filters or Markov localisation filter. Particle filters concepts are mainly used to solve the localisation problems. 
+![Summary](images/k1.png)
 
