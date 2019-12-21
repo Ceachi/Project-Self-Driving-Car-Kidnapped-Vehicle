@@ -220,6 +220,16 @@ Implement the Bayes’ localization filter by first initializing priors, then do
 
 ## Particle Filters overview
 
-Particle filters are the realisation of Bayes filters or Markov localisation filter. Particle filters concepts are mainly used to solve the localisation problems. 
-![Summary](images/k1.png)
+Particle filters are the realisation of Bayes filters or Markov localisation filter. Particle filters concepts are mainly used to solve the localisation problems.  
+![k1](images/k1.png)  
 
+Red dots are the discrete guesses of where the robot might be. Each red dot has x coordinates, y coordinates, and orientation. Particle filter is the set of several thousand such guesses comprise approximate representation of the posterior of the robot. In the beginning, particles are uniformly spread, but filter make them survive in proportion to how consistent is the particles with sensor measurements.
+
+### Weights
+![k2](images/k2.gif) 
+Particle filter normally carry discrete no. of particles.  
+ **Particle** = vector which contains x coordinates, y coordinates, and orientation, which survive based on how they are consistent with sensor measurements.
+ **Consistency** = measured based on mismatch between actual measurement and predicted measurement which is called weights.
+ ![k3](images/k3.png) 
+ Each weight implies how close the actual measurement of the particle to predicted measurement (higher weight particles - higher probability to survive).
+ 
