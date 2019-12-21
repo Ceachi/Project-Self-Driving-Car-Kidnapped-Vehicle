@@ -1,5 +1,9 @@
-# Overview
+# Kidnapped Vehicle Project
+
 This repository contains all the code needed to complete the final project for the Localization course in Udacity's Self-Driving Car Nanodegree.
+
+|Kidnapped Vehicle Project|
+|[![Kidnapped Vehicle Project](images/16.PNG)](https://www.youtube.com/watch?v=PxBrMSjaFcE&feature=youtu.be)
 
 ## Project Introduction
 Your robot has been kidnapped and transported to a new location! Luckily it has a map of this location, a (noisy) GPS estimate of its initial location, and lots of (noisy) sensor and control data.
