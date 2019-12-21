@@ -228,8 +228,23 @@ Red dots are the discrete guesses of where the robot might be. Each red dot has 
 ### Weights
 ![k2](images/k2.gif) 
 Particle filter normally carry discrete no. of particles.  
- **Particle** = vector which contains x coordinates, y coordinates, and orientation, which survive based on how they are consistent with sensor measurements.
- **Consistency** = measured based on mismatch between actual measurement and predicted measurement which is called weights.
- ![k3](images/k3.png) 
- Each weight implies how close the actual measurement of the particle to predicted measurement (higher weight particles - higher probability to survive).
- 
+**Particle** = vector which contains x coordinates, y coordinates, and orientation, which survive based on how they are consistent with sensor measurements.  
+**Consistency** = measured based on mismatch between actual measurement and predicted measurement which is called weights.
+![k3](images/k3.png) 
+Each weight implies how close the actual measurement of the particle to predicted measurement (higher weight particles - higher probability to survive).
+![k4](images/k4.png)
+
+### Resampling
+Technique used to randomly drawing new particles from old ones with replacement in proportion to their importance weights. After resampling, particles with higher weights likely to stay and all others may die out.  
+In order to do the resampling, **Resampling Wheel** technique is used.
+![k5](images/k5.png)
+
+## Particle Filters implementation
+![k6](images/k6.png)
+```cpp
+Particle filters has got four major steps:
+- Initialisation step: At the initialization step we estimate our position from GPS input. The subsequent steps in the process will refine this estimate to localize our vehicle.
+- Prediction step: During the prediction step we add the control input (yaw rate & velocity) for all particles.
+- Update step: During the update step, we update our particle weights using map landmark positions and feature measurements.
+- Resample step: During resampling we will resample M times (M is range of 0 to length_of_particleArray) drawing a particle i (i is the particle index) proportional to its weight. Resampling wheel is used at this step.
+```
