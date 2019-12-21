@@ -172,11 +172,47 @@ If you look at bayes rule, in order to calculate prior, we need to apply total p
 
 **The probability returned by the motion model is the product of the transition model probability (the probability of moving from xt−1 → xt and the probability of the state xt−1.**
 
+**Example code** : go to, main.cpp  
 
+### Observation Model
 
+**Observation Model** = It’s a probability distribution of overservation set zt, given the position xt, observation z1:t-1, control u1:t​ and map m.  
+![Observation Model](images/8.PNG)
+![Graphical Representation](images/9.PNG)
+![After Markov Assumption Applied](images/9.PNG)
 
+ Now we must determine how to define the observation model for a single range measurement.   
+ ![After Markov Assumption Applied](images/11.PNG)  
+ 
+ In general there exists a variety of observation models due to different sensor, sensor specific noise behavior and performance, and map types. For our 1D example we assume that our sensor measures to the n closest objects in the driving direction, which represent the landmarks on our map. We also assume that observation noise can be modeled as a Gaussian with a standard deviation of 1 meter and that our sensor can measure in a range of 0–100 meters.  
+ To implement the observation model we use the given state xt​, and the given map to estimate pseudo ranges, which represent the true range values under the assumption that your car would stand at a specific position xt​, on the map.  
+ ![Example](images/12.PNG)
+ 
+The observation model uses pseudo range estimates and observation measurements as inputs.
+The observation model will be implemented by performing the following at each time step:
 
+```cpp
+1) Measure the range to landmarks up to 100m from the vehicle, in the driving direction (forward)
+2) Estimate a pseudo range from each landmark by subtracting pseudo position from the landmark position
+3) Match each pseudo range estimate to its closest observation measurement
+4) For each pseudo range and observation measurement pair, calculate a probability by passing relevant values to norm_pdf: norm_pdf(observation_measurement, pseudo_range_estimate, observation_stdev)
+5) Return the product of all probabilities
+```
 
+### Bayes Filter for localisation or Markov Localization full formula 
+
+![Full formula](images/13.PNG)
+Implement the Bayes’ localization filter by first initializing priors, then doing the following within each time step:  
+![Algoritm for filter](images/14.PNG)
+
+### Summary
+![Summary](images/15.PNG)
+```cpp
+- The Bayes Localization Filter or Markov Localization is a general framework for recursive state estimation.
+- That means this framework allows us to use the previous state (state at t-1) to estimate a new state (state at t) using only current observations and controls (observations and control at t), rather than the entire data history (data from 0:t).
+- The motion model describes the prediction step of the filter while the observation model is the update step.
+- The state estimation using the Bayes filter is dependent upon the interaction between prediction (motion model) and update (observation model steps) and all the localization methods discussed so far are realizations of the Bayes filter eg. 1D Markov Localisation, Kalman Filters, and Particle Filters.
+```
 
 ## Particle Filters overview
 
